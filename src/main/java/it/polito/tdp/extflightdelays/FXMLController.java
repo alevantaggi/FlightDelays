@@ -3,6 +3,7 @@ package it.polito.tdp.extflightdelays;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.extflightdelays.model.Airport;
 import it.polito.tdp.extflightdelays.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -28,10 +29,10 @@ public class FXMLController {
     private TextField compagnieMinimo; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbBoxAeroportoPartenza"
-    private ComboBox<?> cmbBoxAeroportoPartenza; // Value injected by FXMLLoader
+    private ComboBox<Airport> cmbBoxAeroportoPartenza; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbBoxAeroportoDestinazione"
-    private ComboBox<?> cmbBoxAeroportoDestinazione; // Value injected by FXMLLoader
+    private ComboBox<Airport> cmbBoxAeroportoDestinazione; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnAnalizza"
     private Button btnAnalizza; // Value injected by FXMLLoader
@@ -41,12 +42,34 @@ public class FXMLController {
 
     @FXML
     void doAnalizzaAeroporti(ActionEvent event) {
+    	cmbBoxAeroportoPartenza.getItems().clear();;
+    	cmbBoxAeroportoDestinazione.getItems().clear();
+    	int n=0;
 
+    	try {
+    		n= Integer.parseInt(compagnieMinimo.getText());
+    		
+		} catch (Exception e) {
+			txtResult.setText("Inserire un numero");
+			return;
+		}
+    	
+    	this.model.creaGrafo(n);
+    	cmbBoxAeroportoPartenza.getItems().addAll(this.model.getAereoporti());
+    	cmbBoxAeroportoDestinazione.getItems().addAll(this.model.getAereoporti());
+    	
     }
 
     @FXML
     void doTestConnessione(ActionEvent event) {
-
+    	txtResult.setText("");
+    	if(this.model.grafoIsNotEmpty()) {
+    		for(Airport a: this.model.trovaPercorso(cmbBoxAeroportoPartenza.getValue(),cmbBoxAeroportoDestinazione.getValue()))
+        		txtResult.appendText(""+a+"\n");
+    		
+    		return;
+    	}
+    	txtResult.setText("Prima è necesario inserire il numero di compagnie minime  e selezioanre analizza aereporti!");
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete

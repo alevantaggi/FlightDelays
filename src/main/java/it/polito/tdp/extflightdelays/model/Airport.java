@@ -121,7 +121,7 @@ public class Airport implements Comparable<Airport>{
 
 	@Override
 	public String toString() {
-		return iataCode;
+		return airportName;
 	}
 
 	@Override
